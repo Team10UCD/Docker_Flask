@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y apache2 \
 	g++ \
 	unixodbc-dev \
 	nano \
+	curl \
   && apt-get clean \
   && apt-get autoremove \
   && rm -rf /var/lib/apt/lists/*
@@ -16,6 +17,7 @@ RUN apt-get update && apt-get install -y apache2 \
 #copy app requirements to the /var folder docker will use to store files
 COPY ./app/requirements.txt /var/www/apache-flask/app/requirements.txt
 RUN pip3 install -r /var/www/apache-flask/app/requirements.txt
+
 
 COPY ./apache-flask.conf /etc/apache2/sites-available/apache-flask.conf
 COPY ./apache-flask-ssl.conf /etc/apache2/sites-available/apache-flask-ssl.conf
@@ -44,5 +46,10 @@ EXPOSE 443
 #working directory for docker
 WORKDIR /var/www/apache-flask
 
+#install MS SQL ODBC driver:
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
 
 CMD /usr/sbin/apache2ctl -D FOREGROUND
