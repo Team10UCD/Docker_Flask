@@ -1,5 +1,8 @@
 Flask == 2.0.0
 SQLAlchemy
 Flask-Login
-googlemaps
 pyodbc
+pandas
+Flask-SQLAlchemy
+matplotlib
+requests
